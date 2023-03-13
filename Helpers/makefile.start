@@ -1,0 +1,35 @@
+DS_Name := bin_name
+BinPath := Bin/$(DS_Name)
+makefile_name := makefile.$(DS_Name)
+driver := driver_name
+name := $(DS_Name)
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+ROOT_dir := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+DATEFILE := $(shell date --iso=seconds)
+
+
+####EndConfig####
+
+
+path:
+	echo $(mkfile_path)
+	echo $(ROOT_dir)
+
+validate: $(ROOT_dir)/../../lib/Drivers/$(driver)
+	@g++ $(ROOT_dir)/../../lib/Drivers/$(driver) -lpthread $(allocator) -D VALIDATE -o ../$(BinPath)
+	@echo "Running Validator on $(DS_Name)"
+	@./../$(BinPath)
+	@rm ./../$(BinPath)
+
+build: $(ROOT_dir)/../../lib/Drivers/$(driver)
+	@g++ $(ROOT_dir)/../../lib/Drivers/$(driver) -lpthread $(allocator) -D BENCH -o ../$(BinPath)
+	
+
+run: $(ROOT_dir)/../$(BinPath)
+	@mkdir $(ROOT_dir)/../../Logs/Perf/$(name)_f_$(DATEFILE)
+	for i in `seq 1 $(numThreads)`; do \
+		$(PERF_PRELOAD) -o $(ROOT_dir)/../../Logs/Perf/$(name)_f_$(DATEFILE)/test_$$num.txt $(ROOT_dir)/../$(BinPath) -t $$i -a $(actions) -T $(time) -p $(threadPinning) -i $(iterasions) -ls $(localworkStatus) -lt $(localwork) -o $(name)_f;\
+	done
+
+

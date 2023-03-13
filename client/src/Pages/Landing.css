@@ -1,0 +1,45 @@
+.ds-container{
+    display: flex;
+    height: 600px;
+    width: 100%;
+    align-items: center;
+    justify-content: space-evenly;
+    margin: auto;
+  }
+  
+  .ds-name{
+    margin: auto;
+  }
+
+  .ds-item{
+    display: flex;
+    text-decoration: none;
+    color: black;
+    height: 150px;
+    width: 150px;
+    background-color: #F25F5C;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    align-items: center;
+  }
+  
+  .ds-text{
+    margin: auto;
+  }
+  
+  .title{
+    margin-top: 2em;
+  }
+  
+  .ds-item:hover{
+    transition: ease-in-out 0.2s;
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+  
+  .ds-item:active{
+    transition: ease-in-out 0.2;
+    transform: scale(0.90);
+    cursor: pointer;
+  }

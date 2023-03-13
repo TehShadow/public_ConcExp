@@ -1,0 +1,47 @@
+DS_Name := bin_name
+BinPath := Bin/$(DS_Name)
+makefile_name := makefile.$(DS_Name)
+driver := driver_name
+name := $(DS_Name)
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+ROOT_dir := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+DATEFILE := $(shell date --iso=seconds)
+
+
+actions = 100000
+time = 10000
+iterasions = 3
+numThreads = 8
+localworkStatus = 0
+localwork = 0
+threadPinning = 0
+allocator :=
+jemalloc := -L/usr/local/lib -Wl,-rpath,/usr/local/lib -ljemalloc -lm -lstdc++ -pthread
+hoard_alloc := /../../libraries/Hoard-master/src/libhoard.so
+PERF_PRELOAD := perf stat -a -e cache-references,cache-misses,L1-dcache-load,L1-dcache-loads-misses,L1-dcache-stores,cache-references:u,cache-misses:u,L1-dcache-load:u,L1-dcache-loads-misses:u,L1-dcache-stores:u
+
+####EndConfig####
+
+
+path:
+	echo $(mkfile_path)
+	echo $(ROOT_dir)
+
+validate: $(ROOT_dir)/../../lib/Drivers/$(driver)
+	@g++ $(ROOT_dir)/../../lib/Drivers/$(driver) -lpthread $(allocator) -D VALIDATE -o ../$(BinPath)
+	@echo "Running Validator on $(DS_Name)"
+	@./../$(BinPath)
+	@rm ./../$(BinPath)
+
+build: $(ROOT_dir)/../../lib/Drivers/$(driver)
+	@g++ $(ROOT_dir)/../../lib/Drivers/$(driver) -lpthread $(allocator) -D BENCH -o ../$(BinPath)
+	
+
+run: $(ROOT_dir)/../$(BinPath)
+	@mkdir $(ROOT_dir)/../../Logs/Perf/$(name)_f_$(DATEFILE)
+	for i in `seq 1 $(numThreads)`; do \
+		$(PERF_PRELOAD) -o $(ROOT_dir)/../../Logs/Perf/$(name)_f_$(DATEFILE)/test_$$num.txt $(ROOT_dir)/../$(BinPath) -t $$i -a $(actions) -T $(time) -p $(threadPinning) -i $(iterasions) -ls $(localworkStatus) -lt $(localwork) -o $(name)_f;\
+	done
+
+

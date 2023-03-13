@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "^4.18.2",
+    "fs-extra": "^11.1.0",
+    "fse": "^4.0.1",
+    "morgan": "^1.10.0"
+  }
+}
