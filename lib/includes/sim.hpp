@@ -1,5 +1,4 @@
 #include <iostream>
-#include "./togglebit.hpp"
 #include <atomic>
 #include <string.h>
 #include <functional>
